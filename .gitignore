@@ -1,2 +1,12 @@
-.env
+env/
+__pycache__/
+*.pyc
+
 cookies.json
+chrome_bot/
+profil_*/
+*.tar.gz
+
+debug_ecran_virtuel*.png
+
+COMMANDES_PERSO.md
