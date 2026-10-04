@@ -31,6 +31,9 @@ import random
 # POUR DANS LA VM AVOIR LE DEBUG SCREEN : 
 #  scp pverriere@IP_DE_LA_VM:~/WikiMasterBot/debug_ecran_virtuel.png .
 
+# voir les logs chrome : 
+# cat /tmp/chrome.log
+
 def cliquer_element_visuel_organique(chemin_image="input_cible.png", confiance=0.8, timeout=20):
     """
     Cherche l'image pendant 20s, prend UNE SEULE capture d'écran à la fin, puis agit.
