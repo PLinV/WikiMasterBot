@@ -12,6 +12,7 @@ from selenium.common.exceptions import TimeoutException, InvalidSessionIdExcepti
 import pyautogui
 import time
 import random
+import json
 
 ## On nettoie tout par sécurité
 #pkill -9 -f chrome
@@ -56,6 +57,8 @@ def cliquer_element_visuel_organique(chemin_image="input_cible.png", confiance=0
         time.sleep(0.5)
     
     # 2. PRISE DE LA CAPTURE D'ÉCRAN UNIQUE (au bout des 20s, ou dès qu'il a trouvé)
+    if os.path.exists("debug_ecran_virtuel.png"):
+        os.remove("debug_ecran_virtuel.png")
     pyautogui.screenshot("debug_ecran_virtuel.png")
     print("-> DÉBOGAGE : Capture 'debug_ecran_virtuel.png' enregistrée. Regardez cette image !")
     
@@ -197,6 +200,34 @@ def cliquer_bouton_continuez(driver):
     except Exception as e:
         print(f"-> Erreur clic Continuer : {e}")
 
+def charger_cookies(driver, chemin="cookies.json"):
+    with open(chemin) as f:
+        cookies = json.load(f)
+    print(f"{len(cookies)} cookies lus dans {chemin}")
+    print(f"URL avant injection : {driver.current_url}")
+
+    ok = 0
+    for c in cookies:
+        c = dict(c)
+        c.pop("sameSite", None)
+        c.pop("domain", None)  # Chrome utilise alors le domaine de la page courante
+        try:
+            driver.add_cookie(c)
+            ok += 1
+            print(f"  [OK]     {c['name']}")
+        except Exception as e:
+            print(f"  [ERREUR] {c['name']} : {str(e).splitlines()[0]}")
+
+    print(f"{ok}/{len(cookies)} cookies injectés")
+    print("Cookies présents dans Chrome :", [c["name"] for c in driver.get_cookies()])
+
+    driver.refresh()
+    time.sleep(3)
+    print(f"URL après refresh : {driver.current_url}")
+    if "/login" in driver.current_url:
+        print("[ÉCHEC] Toujours sur la page de login")
+    else:
+        print("[SUCCÈS] Session reconnue")
 
 # ==========================================
 # 2. ORCHESTRATION DU PROGRAMME
@@ -216,6 +247,7 @@ def lancer_bot():
                 print("Connexion au navigateur Chrome en arrière-plan...")
                 driver = webdriver.Chrome(options=options) 
                 driver.get("https://www.wiki-masters.com/pulls") # Remplacez par votre URL
+                charger_cookies(driver)
                 print("Page chargée.")
                 
                 temps_initial = calculer_temps_aleatoire(11, 1)

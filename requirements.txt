@@ -1,3 +1,5 @@
-pip install pyautogui
-pip install selenium
-pip install opencv-python
+selenium>=4.6
+pyautogui
+opencv-python
+pillow
+python3-xlib; sys_platform == "linux"
