@@ -1,3 +1,6 @@
+import os
+os.environ["DISPLAY"] = ":99"
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -24,6 +27,9 @@ import random
 
 ## pour avoir un accés graphique quand même : 
 # google-chrome --user-data-dir="/home/pverriere/Documents/chrome_bot"
+
+# POUR DANS LA VM AVOIR LE DEBUG SCREEN : 
+#  scp pverriere@IP_DE_LA_VM:~/WikiMasterBot/debug_ecran_virtuel.png .
 
 def cliquer_element_visuel_organique(chemin_image="input_cible.png", confiance=0.8, timeout=20):
     """
